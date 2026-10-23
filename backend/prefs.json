@@ -1,0 +1,28 @@
+{
+  "teams": [
+    {
+      "id": 81,
+      "name": "FC Barcelona"
+    },
+    {
+      "id": 1776,
+      "name": "S\u00e3o Paulo FC"
+    },
+    {
+      "id": 4,
+      "name": "Borussia Dortmund"
+    }
+  ],
+  "competitions": [
+    "CL",
+    "PD",
+    "BSA",
+    "BL1"
+  ],
+  "stats": [
+    "form",
+    "standings",
+    "goals",
+    "assists"
+  ]
+}

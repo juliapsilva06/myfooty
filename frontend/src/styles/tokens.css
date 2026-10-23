@@ -1,47 +1,84 @@
-/* Design tokens: change the look of the whole app from here. */
+/* Design tokens: change the look of the whole app from here.
+   Dark is the default. The theme is chosen by data-theme on <html> (see index.html and useTheme.js). */
+
+:root,
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* Palette: dark ("floodlit") */
+  --night: #0d1411;
+  --raised: #16211b;
+  --linework: #2a3a31;
+  --floodlight: #f2f6f1;
+  --muted: #9fb0a6;
+
+  /* Semantic names used by the components */
+  --bg: var(--night);
+  --surface: var(--raised);
+  --border: var(--linework);
+  --text: var(--floodlight);
+  --text-muted: var(--muted);
+
+  /* App-level controls are neutral and inverted. Team colors provide the brightness. */
+  --accent: var(--floodlight);
+  --accent-on: var(--night);
+  --accent-soft: #1f2d25;
+  --touchline: #4fa37a; /* fallback when a team has no color */
+
+  /* Results (always paired with a letter) */
+  --win: #34d17f;
+  --draw: #8a9a92;
+  --loss: #ff5c4d;
+  --on-result: #0d1411;
+
+  --shadow-pop: 0 10px 28px rgba(0, 0, 0, 0.55);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --chalk: #edf0ea;
+  --paper: #fbfcfa;
+  --linework: #cbd3cc;
+  --ink: #1b2621;
+  --muted: #5a6760;
+
+  --bg: var(--chalk);
+  --surface: var(--paper);
+  --border: var(--linework);
+  --text: var(--ink);
+  --text-muted: var(--muted);
+
+  --accent: var(--ink);
+  --accent-on: var(--paper);
+  --accent-soft: #e0e6df;
+  --touchline: #3e7a5a;
+
+  --win: #1f7a4a;
+  --draw: #6b7770;
+  --loss: #c8402f;
+  --on-result: #ffffff;
+
+  --shadow-pop: 0 10px 28px rgba(27, 38, 33, 0.18);
+}
+
+/* Theme-independent tokens */
 :root {
-  color-scheme: light dark;
+  --font-body: "Archivo Variable", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 
-  --bg: #f4f6f9;
-  --surface: #ffffff;
-  --text: #14181f;
-  --text-muted: #5b6573;
-  --border: #e1e5eb;
-  --accent: #1f6feb;
-  --accent-soft: #e6f0ff;
-  --highlight: #fff6c2;
+  --radius-hero: 20px;
+  --radius-control: 10px;
 
-  --win: #1a7f37;
-  --draw: #6b7280;
-  --loss: #cf222e;
-
-  --radius: 12px;
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
   --space-4: 16px;
   --space-6: 24px;
   --space-8: 32px;
+  --space-12: 48px;
 
   --font-sm: 0.8125rem;
   --font-md: 0.9375rem;
   --font-lg: 1.125rem;
   --font-xl: 1.5rem;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0e1116;
-    --surface: #161b22;
-    --text: #e6edf3;
-    --text-muted: #9aa4b2;
-    --border: #2a313c;
-    --accent: #58a6ff;
-    --accent-soft: #14304f;
-    --highlight: #3b3411;
-
-    --win: #2ea043;
-    --draw: #6e7681;
-    --loss: #f85149;
-  }
 }

@@ -6,7 +6,7 @@
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-family: var(--font-body);
   font-size: var(--font-md);
   line-height: 1.5;
   background: var(--bg);
@@ -17,22 +17,32 @@ h1, h2, p { margin: 0; }
 
 .muted { color: var(--text-muted); }
 .small { font-size: var(--font-sm); }
+.num { font-variant-numeric: tabular-nums; }
+
+/* Scoreboard type: heavy and condensed (needs the width axis of the Archivo font). */
+.display {
+  font-variation-settings: "wdth" 75;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  font-variant-numeric: tabular-nums;
+}
 
 /* ---------- Buttons ---------- */
 .btn {
   font: inherit;
   padding: var(--space-2) var(--space-4);
-  border-radius: 8px;
+  border-radius: var(--radius-control);
   border: 1px solid var(--border);
-  background: var(--surface);
+  background: transparent;
   color: var(--text);
   cursor: pointer;
 }
-.btn:hover { border-color: var(--accent); }
+.btn:hover { border-color: var(--text-muted); }
 .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .btn:disabled { opacity: 0.6; cursor: not-allowed; }
-.btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-.btn-quiet { background: transparent; }
+.btn-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-on); font-weight: 600; }
+.btn-primary:hover { border-color: var(--accent); filter: brightness(0.92); }
+.btn-quiet { border-color: transparent; }
 
 /* ---------- Layout ---------- */
 .app-header {
@@ -42,10 +52,10 @@ h1, h2, p { margin: 0; }
   gap: var(--space-4);
   flex-wrap: wrap;
   padding: var(--space-4) var(--space-6);
-  background: var(--surface);
+  background: var(--bg);
   border-bottom: 1px solid var(--border);
 }
-.app-header__title { font-size: var(--font-lg); font-weight: 650; }
+.app-header__title { font-size: 1.75rem; line-height: 1.15; }
 .app-header__actions { display: flex; align-items: center; gap: var(--space-3); }
 
 .badge {
@@ -53,13 +63,13 @@ h1, h2, p { margin: 0; }
   padding: 2px 10px;
   border-radius: 999px;
   background: var(--accent-soft);
-  color: var(--accent);
+  color: var(--text-muted);
 }
 
 .app-main {
-  max-width: 1100px;
+  max-width: 1120px;
   margin: 0 auto;
-  padding: var(--space-6);
+  padding: var(--space-8) var(--space-6) var(--space-12);
 }
 
 .center-screen {
@@ -71,24 +81,65 @@ h1, h2, p { margin: 0; }
 }
 .center-screen__box { max-width: 460px; display: grid; gap: var(--space-4); justify-items: center; }
 
+/* ---------- Menu ---------- */
+.menu { position: relative; }
+.menu__panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + var(--space-2));
+  z-index: 30;
+  min-width: 220px;
+  padding: var(--space-2);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  box-shadow: var(--shadow-pop);
+}
+.menu__heading { padding: var(--space-2) var(--space-3) var(--space-1); font-size: var(--font-sm); color: var(--text-muted); }
+.menu__item {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font: inherit;
+  text-align: left;
+  padding: var(--space-2) var(--space-3);
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+}
+.menu__item:hover, .menu__item:focus-visible { background: var(--accent-soft); outline: none; }
+.menu__item:disabled { opacity: 0.6; cursor: not-allowed; }
+.menu__divider { border: 0; border-top: 1px solid var(--border); margin: var(--space-2) 0; }
+
 /* ---------- Dashboard ---------- */
+/* Fewer boxes: sections are separated by whitespace and a hairline, not borders on every side. */
 .dashboard-grid {
   display: grid;
-  gap: var(--space-4);
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--space-12) var(--space-8);
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
 }
 
 .card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: var(--space-4);
+  border-top: 1px solid var(--border);
+  padding-top: var(--space-4);
+  min-width: 0;
 }
 .card__title {
-  font-size: var(--font-sm);
-  font-weight: 600;
-  color: var(--text-muted);
-  margin-bottom: var(--space-3);
+  font-size: var(--font-md);
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: var(--space-4);
+}
+
+/* The next-match widget is the one raised surface (Phase B turns it into the filled hero). */
+.card--next_match {
+  border-top: 0;
+  background: var(--surface);
+  border-radius: var(--radius-hero);
+  padding: var(--space-6);
 }
 
 /* ---------- Loading / error ---------- */
@@ -96,7 +147,7 @@ h1, h2, p { margin: 0; }
   height: 14px;
   border-radius: 6px;
   margin: var(--space-2) 0;
-  background: linear-gradient(90deg, var(--border), var(--bg), var(--border));
+  background: linear-gradient(90deg, var(--border), var(--surface), var(--border));
   background-size: 200% 100%;
   animation: shimmer 1.2s infinite;
 }
@@ -107,17 +158,56 @@ h1, h2, p { margin: 0; }
 
 .error-state { display: grid; gap: var(--space-2); justify-items: start; }
 
-/* ---------- Widgets ---------- */
-.next-match__teams {
+/* ---------- Monogram ---------- */
+.monogram {
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--border); /* neutral for teams you don't follow */
+  color: var(--text);
+  font-variation-settings: "wdth" 75;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+.monogram--sm { width: 28px; height: 28px; font-size: 0.6875rem; }
+.monogram--md { width: 40px; height: 40px; font-size: 0.875rem; }
+.monogram--lg { width: 72px; height: 72px; font-size: 1.5rem; }
+
+/* ---------- Next match ---------- */
+.matchup {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: start;
+  gap: var(--space-3);
+}
+.matchup__side { display: grid; justify-items: center; gap: var(--space-2); text-align: center; min-width: 0; }
+.matchup__name { font-size: var(--font-lg); line-height: 1.15; overflow-wrap: anywhere; }
+.matchup__vs { align-self: center; }
+.next-match__when { margin-top: var(--space-4); text-align: center; display: grid; gap: 2px; }
+.next-match__relative { font-size: 2.25rem; line-height: 1.1; }
+
+/* ---------- Recent form ---------- */
+.form-strip {
+  list-style: none;
+  margin: 0 0 var(--space-4);
+  padding: 0;
   display: flex;
-  align-items: baseline;
-  gap: var(--space-2);
-  flex-wrap: wrap;
-  font-size: var(--font-lg);
-  font-weight: 600;
+  gap: var(--space-3);
+  align-items: flex-end;
+}
+.form-item { display: grid; justify-items: center; gap: 2px; font-size: var(--font-sm); }
+.form-item__score { font-weight: 700; }
+.form-item__opp { color: var(--text-muted); font-size: 0.75rem; letter-spacing: 0.02em; }
+.form-item--latest .chip {
+  width: 36px;
+  height: 36px;
+  outline: 2px solid var(--team-accent, var(--text-muted));
+  outline-offset: 2px;
 }
 
-.chips { display: flex; gap: var(--space-2); margin-bottom: var(--space-3); }
 .chip {
   width: 28px;
   height: 28px;
@@ -125,8 +215,8 @@ h1, h2, p { margin: 0; }
   place-items: center;
   border-radius: 50%;
   font-size: var(--font-sm);
-  font-weight: 700;
-  color: #fff;
+  font-weight: 800;
+  color: var(--on-result);
   background: var(--draw);
 }
 .chip-W { background: var(--win); }
@@ -136,31 +226,55 @@ h1, h2, p { margin: 0; }
 .result-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-1); }
 .result-list li {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  gap: var(--space-3);
+  grid-template-columns: 1.25rem 3rem 1fr;
+  gap: var(--space-2);
   font-size: var(--font-sm);
+  align-items: baseline;
 }
-.result-list li span:last-child { text-align: right; }
+.result-letter { font-weight: 800; }
+.result-W { color: var(--win); }
+.result-L { color: var(--loss); }
+.result-D { color: var(--draw); }
+.result-opp { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-.table { width: 100%; border-collapse: collapse; font-size: var(--font-sm); }
+/* ---------- Table ---------- */
+.table { width: 100%; border-collapse: collapse; font-size: var(--font-sm); font-variant-numeric: tabular-nums; }
 .table th {
   text-align: right;
   font-weight: 600;
   color: var(--text-muted);
   padding: var(--space-1) var(--space-2);
 }
-.table td { text-align: right; padding: 6px var(--space-2); border-top: 1px solid var(--border); }
+.table td { text-align: right; padding: 7px var(--space-2); border-top: 1px solid var(--border); }
 .table th:nth-child(2), .table td:nth-child(2) { text-align: left; width: 100%; }
 .table th:first-child, .table td:first-child { text-align: left; }
-.row-highlight { background: var(--highlight); font-weight: 600; }
-.gap-row td { text-align: center; color: var(--text-muted); }
+.table__points { font-weight: 700; }
 
+/* Your team's row: a tint of its color plus a bar on the left (never color alone: it's also bold). */
+.row-mine { font-weight: 700; }
+.row-mine td {
+  background: color-mix(in srgb, var(--team-accent, var(--touchline)) 16%, transparent);
+  border-top-color: transparent;
+}
+.row-mine td:first-child { box-shadow: inset 3px 0 0 var(--team-accent, var(--touchline)); }
+
+.gap-row td { padding: 0; height: 10px; border-top: 1px dotted var(--text-muted); }
+
+/* ---------- Player lists ---------- */
 .player-list { list-style: none; margin: 0 0 var(--space-2); padding: 0; display: grid; gap: var(--space-2); }
 .player-list li { display: grid; grid-template-columns: 24px 1fr auto; gap: var(--space-3); align-items: center; }
-.player-list .rank { color: var(--text-muted); font-size: var(--font-sm); }
+.player-list .rank { color: var(--text-muted); font-size: var(--font-sm); font-variant-numeric: tabular-nums; }
 .player-list .player { display: grid; }
-.player-list .stat { font-size: var(--font-lg); font-weight: 650; }
+.player-list .stat {
+  font-size: 1.5rem;
+  line-height: 1;
+  font-variation-settings: "wdth" 75;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
 
 @media (max-width: 600px) {
-  .app-header, .app-main { padding: var(--space-4); }
+  .app-header { padding: var(--space-4); }
+  .app-main { padding: var(--space-6) var(--space-4) var(--space-12); }
+  .app-header__title { font-size: 1.5rem; }
 }

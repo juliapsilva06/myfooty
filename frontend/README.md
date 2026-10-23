@@ -6,6 +6,7 @@ React + Vite frontend for the personalized sports dashboard. Matches the API in 
 
 ```bash
 npm install
+npm install @fontsource-variable/archivo   # font used by the visual redesign
 npm run dev
 ```
 
@@ -49,4 +50,7 @@ src/
 - [x] Phase 1: mock API, client switch, app shell, onboarding/dashboard switch
 - [x] Phase 2: widgets, registry, loading/error states, responsive grid
 - [x] Phase 3: onboarding chat + assistant panel
+- [x] Visual Phase A: dark/light/system theme, Archivo font, monograms, restyled table, form, and next match
+- [ ] Visual Phase B: team picker, "All teams" view, filled hero, merged leaders
+- [ ] Visual Phase C: team color picker, chat polish, motion
 - [ ] Phase 4: search bar + detail views

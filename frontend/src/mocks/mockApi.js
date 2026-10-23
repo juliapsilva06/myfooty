@@ -33,6 +33,7 @@ const TEAMS = [
 ].map((t) => ({ ...t, competitions: ["DEMO"] }));
 
 const teamName = (id) => TEAMS.find((t) => t.id === id)?.name ?? "Unknown";
+const tlaOf = (id) => TEAMS.find((t) => t.id === id)?.tla ?? null;
 
 // [team_id, played, won, draw, lost, goal difference], already in table order
 const TABLE_SOURCE = [
@@ -105,6 +106,10 @@ function recentResults(teamId, n = 5) {
     competition: COMPETITION.name,
     home: teamName(m.home),
     away: teamName(m.away),
+    home_id: m.home,
+    away_id: m.away,
+    home_tla: tlaOf(m.home),
+    away_tla: tlaOf(m.away),
     status: "FINISHED",
     score: `${m.hg}-${m.ag}`,
     outcome: outcome(m, teamId),
@@ -122,6 +127,10 @@ function nextMatch(teamId) {
     competition: COMPETITION.name,
     home: teamName(upcoming.home),
     away: teamName(upcoming.away),
+    home_id: upcoming.home,
+    away_id: upcoming.away,
+    home_tla: tlaOf(upcoming.home),
+    away_tla: tlaOf(upcoming.away),
     status: "SCHEDULED",
     score: null,
   };

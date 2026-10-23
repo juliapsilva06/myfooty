@@ -37,7 +37,7 @@ export default function WidgetCard({ widget }) {
   if (!Component) return null;
 
   return (
-    <section className="card">
+    <section className={`card card--${widget.type}`}>
       <h2 className="card__title">{widget.title}</h2>
       {isLoading ? (
         <Skeleton />

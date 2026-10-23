@@ -31,7 +31,7 @@
 .bubble-user {
   align-self: flex-end;
   background: var(--accent);
-  color: #fff;
+  color: var(--accent-on);
   border-bottom-right-radius: 4px;
 }
 .bubble-assistant {
