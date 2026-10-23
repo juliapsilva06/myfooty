@@ -64,8 +64,8 @@
 
 /* Theme-independent tokens */
 :root {
-  --font-body: "Press Start 2P", system-ui, sans-serif;
-  --font-display: "Jersey 20", system-ui, sans-serif;
+  --font-body: "Jersey 20", system-ui, sans-serif;
+  --font-display: "Press Start 2P", system-ui, sans-serif;
 
   --radius-hero: 20px;
   --radius-control: 10px;
