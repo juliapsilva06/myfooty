@@ -67,6 +67,18 @@
   --font-body: "Jersey 20", system-ui, sans-serif;
   --font-display: "Press Start 2P", system-ui, sans-serif;
 
+  --font-brand: "Jersey 20", system-ui, sans-serif;
+  --brand-weight: 400;
+
+  .brand__name { font-size: 1.1rem; }
+  .view-title { font-size: 1.25rem; }
+  .hero__name { font-size: clamp(0.75rem, 2vw, 1rem); }
+  .hero__count { font-size: clamp(1.25rem, 4vw, 2rem); }
+  .leader__stat { font-size: 1rem; }
+  .monogram--sm { font-size: 0.5rem; }
+  .monogram--md { font-size: 0.625rem; }
+  .monogram--lg, .hero .monogram--lg { font-size: 0.875rem; }
+
   --radius-hero: 20px;
   --radius-control: 10px;
 

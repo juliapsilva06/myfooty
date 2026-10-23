@@ -1,0 +1,50 @@
+/* ALL font choices live here. Import this LAST in main.jsx so nothing overrides it.
+   To change a font, change its name in the three lines below (the font must also be loaded:
+   an import in main.jsx, or a <link> in index.html). */
+
+:root {
+  --font-body: "Jersey 20", system-ui, sans-serif;           /* sentences, tables, chat, the date */
+  --font-display: "Press Start 2P", system-ui, sans-serif;    /* team names, countdown, scores, headings */
+  --font-brand: "Press Start 2P", system-ui, sans-serif;      /* "Footy Haus" */
+}
+
+/* Jersey 20 and Press Start 2P each have ONE weight. Without this line the browser fakes bold,
+   which smudges the pixels. */
+body {
+  font-family: var(--font-body);
+  font-synthesis: none;
+}
+
+/* ---------- Display text ---------- */
+.display,
+.monogram,
+.brand__name,
+.view-title,
+.hero__name,
+.hero__count,
+.leader__stat {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-variation-settings: normal;
+  letter-spacing: 0;
+  line-height: 1.35;
+}
+
+/* Press Start 2P is very wide, so everything that uses it is smaller than before.
+   Raise or lower these numbers to taste. */
+.brand__name { font-family: var(--font-brand); font-size: 1.1rem; }
+.view-title { font-size: 1.25rem; }
+.hero__name { font-size: clamp(0.75rem, 2vw, 1rem); }
+.hero__count { font-size: clamp(1.25rem, 4vw, 2rem); }
+.leader__stat { font-size: 1rem; }
+.monogram--sm { font-size: 0.5rem; }
+.monogram--md { font-size: 0.625rem; }
+.monogram--lg,
+.hero .monogram--lg { font-size: 0.875rem; }
+
+/* ---------- Body text ---------- */
+.brand__subtitle {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--text-muted);
+}

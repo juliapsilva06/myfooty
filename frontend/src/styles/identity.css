@@ -64,3 +64,12 @@ body {
   color: var(--on-accent);
   text-shadow: none;
 }
+
+/* Big text uses the display font; the rest stays on the body font */
+.display, .monogram {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-variation-settings: normal;
+  letter-spacing: 0;
+  line-height: 1.3;
+}
