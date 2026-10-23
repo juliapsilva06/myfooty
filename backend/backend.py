@@ -30,9 +30,11 @@ import anthropic
 import httpx
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+from dotenv import load_dotenv
+load_dotenv()
 
 FD_BASE = "https://api.football-data.org/v4"
-FD_TOKEN = os.environ["9f0920bc67914dde89f671a87e642513"]
+FD_TOKEN = os.environ["FOOTBALL_DATA_TOKEN"]
 MODEL = os.environ.get("CLAUDE_MODEL", "claude-sonnet-5-5")
 
 BASE_DIR = Path(__file__).parent
