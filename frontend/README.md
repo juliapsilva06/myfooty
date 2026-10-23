@@ -12,7 +12,8 @@ npm run dev
 Open the link Vite prints (usually http://localhost:5173).
 
 You will see a dashboard of **fictional** teams and players. About 1 in 10 widget loads fails on purpose
-so you can see the error and retry state. Click **Edit my dashboard** to see the onboarding placeholder.
+so you can see the error and retry state. Click **Edit my dashboard** to run the scripted onboarding chat,
+and **Ask** to open the assistant panel.
 
 ## Switch to the real backend
 
@@ -26,12 +27,13 @@ so you can see the error and retry state. Click **Edit my dashboard** to see the
 src/
   api/client.js            real fetch calls, plus the mock switch
   mocks/mockApi.js         fake backend (same response shapes as the real one)
-  hooks/                   useDashboard, useWidgetData
+  hooks/                   useDashboard, useWidgetData, useChat
   components/
     widgets/               one component per widget type + registry.js
     dashboard/             Dashboard (grid) and WidgetCard (loading/error/empty)
     layout/AppShell.jsx    header + dashboard
-    onboarding/            placeholder now, chat in Phase 3
+    onboarding/            onboarding chat screen
+    chat/                  MessageList, MessageInput, ChatPanel (assistant slide-over)
   styles/tokens.css        colors, spacing, fonts (light + dark)
 ```
 
@@ -46,5 +48,5 @@ src/
 - [x] Phase 0: setup, tokens
 - [x] Phase 1: mock API, client switch, app shell, onboarding/dashboard switch
 - [x] Phase 2: widgets, registry, loading/error states, responsive grid
-- [ ] Phase 3: onboarding chat + assistant panel
+- [x] Phase 3: onboarding chat + assistant panel
 - [ ] Phase 4: search bar + detail views

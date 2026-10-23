@@ -1,11 +1,16 @@
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { api, USE_MOCK } from "../../api/client.js";
+import { useChat } from "../../hooks/useChat.js";
 import Dashboard from "../dashboard/Dashboard.jsx";
+import ChatPanel from "../chat/ChatPanel.jsx";
 
 export default function AppShell({ dashboard }) {
   const queryClient = useQueryClient();
   const [resetting, setResetting] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
+  // Lives here (not inside ChatPanel) so the conversation survives closing the panel.
+  const assistant = useChat("assistant");
   const teamNames = dashboard.preferences.teams.map((t) => t.name).join(", ");
 
   async function handleEdit() {
@@ -13,6 +18,7 @@ export default function AppShell({ dashboard }) {
     setResetting(true);
     try {
       await api.resetPreferences();
+      assistant.reset();
       queryClient.removeQueries({ queryKey: ["widget"] });
       await queryClient.invalidateQueries({ queryKey: ["dashboard"] });
     } finally {
@@ -29,6 +35,9 @@ export default function AppShell({ dashboard }) {
         </div>
         <div className="app-header__actions">
           {USE_MOCK && <span className="badge">Sample data</span>}
+          <button className="btn btn-primary" onClick={() => setChatOpen(true)}>
+            Ask
+          </button>
           <button className="btn btn-quiet" onClick={handleEdit} disabled={resetting}>
             Edit my dashboard
           </button>
@@ -37,6 +46,7 @@ export default function AppShell({ dashboard }) {
       <main className="app-main">
         <Dashboard widgets={dashboard.widgets} />
       </main>
+      {chatOpen && <ChatPanel chat={assistant} onClose={() => setChatOpen(false)} />}
     </>
   );
 }

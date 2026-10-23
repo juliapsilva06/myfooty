@@ -195,6 +195,79 @@ const PREFERENCES = {
 // Starts onboarded so you see the dashboard first. "Edit my dashboard" resets this.
 const state = { onboarded: true };
 
+// ------------------------------------------------------- scripted mock agents
+// The real agent lives in the backend. These fakes just let you test the chat UI.
+const script = { step: 0, answers: [] };
+
+function onboardingReply(messages) {
+  const last = (messages[messages.length - 1]?.content ?? "").trim();
+  if (messages.length === 1) {
+    // A brand new conversation always starts from the top.
+    script.step = 0;
+    script.answers = [];
+  }
+  const reply = (answer, dashboard_updated = false) => ({ answer, dashboard_updated });
+
+  switch (script.step) {
+    case 0:
+      script.step = 1;
+      return reply("Hi! I'm here to set up your dashboard. First, which teams do you follow?");
+    case 1:
+      script.answers[0] = last;
+      script.step = 2;
+      return reply("Nice! Which leagues or competitions do you want to focus on?");
+    case 2:
+      script.answers[1] = last;
+      script.step = 3;
+      return reply(
+        "Last question: which stats matter most to you? I can show recent form, the league table, " +
+          "top scorers (goals), and assists. Possession isn't available on the free data plan."
+      );
+    case 3:
+      script.answers[2] = last;
+      script.step = 4;
+      return reply(
+        `Here's what I have:\n- Teams: ${script.answers[0]}\n- Leagues: ${script.answers[1]}\n` +
+          `- Stats: ${script.answers[2]}\n\nShall I save this? (yes/no)`
+      );
+    default:
+      if (/^\s*(y|yes|yeah|yep|sure|ok|okay)\b/i.test(last)) {
+        state.onboarded = true;
+        script.step = 0;
+        return reply(
+          "All set! (Mock mode: I'm loading the sample dashboard with fictional teams, whatever you picked.)",
+          true
+        );
+      }
+      script.step = 1;
+      script.answers = [];
+      return reply("No problem, let's redo it. Which teams do you follow?");
+  }
+}
+
+function assistantReply(text) {
+  const q = text.toLowerCase();
+  const reply = (answer) => ({ answer: `${answer} (Sample data)`, dashboard_updated: false });
+
+  if (q.includes("next")) {
+    const m = nextMatch(1);
+    return reply(`${m.home} play ${m.away} on ${new Date(m.date).toLocaleDateString()}.`);
+  }
+  if (q.includes("assist")) {
+    const top = scorers("assists")[0];
+    return reply(`${top.player} (${top.team}) leads the top scorers with ${top.assists} assists.`);
+  }
+  if (q.includes("table") || q.includes("top of") || q.includes("league")) {
+    const first = FULL_TABLE[0];
+    return reply(`${first.team} are top with ${first.points} points from ${first.played} games.`);
+  }
+  if (q.includes("scor") || q.includes("goal")) {
+    const top = scorers("goals")[0];
+    return reply(`${top.player} (${top.team}) leads with ${top.goals} goals.`);
+  }
+  return reply(`I can answer questions about fixtures, the table, scorers, and assists. You asked: "${text}".`);
+}
+
 export const api = {
   async getDashboard() {
     await sleep(300);
@@ -235,18 +308,10 @@ export const api = {
     return { standings: FULL_TABLE, top_scorers: scorers("goals") };
   },
 
-  // The real scripted onboarding conversation arrives in Phase 3.
   async chat(mode, messages) {
     await randomDelay();
-    if (mode === "onboarding") {
-      state.onboarded = true;
-      return { answer: "Your sample dashboard is ready!", dashboard_updated: true };
-    }
-    const last = messages[messages.length - 1]?.content ?? "";
-    return {
-      answer: `(Mock reply) You asked: "${last}". Real answers will come from the backend agent.`,
-      dashboard_updated: false,
-    };
+    if (mode === "onboarding") return onboardingReply(messages);
+    return assistantReply(messages[messages.length - 1]?.content ?? "");
   },
 
   async getPreferences() {
