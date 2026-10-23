@@ -1,0 +1,47 @@
+/* Design tokens: change the look of the whole app from here. */
+:root {
+  color-scheme: light dark;
+
+  --bg: #f4f6f9;
+  --surface: #ffffff;
+  --text: #14181f;
+  --text-muted: #5b6573;
+  --border: #e1e5eb;
+  --accent: #1f6feb;
+  --accent-soft: #e6f0ff;
+  --highlight: #fff6c2;
+
+  --win: #1a7f37;
+  --draw: #6b7280;
+  --loss: #cf222e;
+
+  --radius: 12px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  --font-sm: 0.8125rem;
+  --font-md: 0.9375rem;
+  --font-lg: 1.125rem;
+  --font-xl: 1.5rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0e1116;
+    --surface: #161b22;
+    --text: #e6edf3;
+    --text-muted: #9aa4b2;
+    --border: #2a313c;
+    --accent: #58a6ff;
+    --accent-soft: #14304f;
+    --highlight: #3b3411;
+
+    --win: #2ea043;
+    --draw: #6e7681;
+    --loss: #f85149;
+  }
+}
