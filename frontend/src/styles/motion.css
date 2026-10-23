@@ -1,0 +1,45 @@
+/* Motion: one load moment plus responses to clicks. Nothing animates on hover except tiny feedback. */
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes pop-in {
+  from { opacity: 0; transform: translateY(6px) scale(0.9); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes slide-in {
+  from { opacity: 0; transform: translateX(24px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes bar-grow {
+  from { transform: scaleX(0); }
+}
+
+/* Switching teams */
+.view-fade { animation: fade-in 200ms ease-out both; }
+
+/* The load moment: the countdown rises, then the form chips pop in one after another */
+.hero__count { animation: rise 420ms ease-out 80ms both; }
+.form-item,
+.overview-row__form .chip {
+  animation: pop-in 320ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 60ms);
+}
+
+/* Responses to a click */
+.leader__fill { animation: bar-grow 480ms ease-out both; }
+.chat-panel { animation: slide-in 220ms ease-out both; }
+
+/* People who turned animation off on their device get none */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
+    transition-duration: 0.01ms !important;
+  }
+}

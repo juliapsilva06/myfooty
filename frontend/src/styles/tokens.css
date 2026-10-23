@@ -64,7 +64,8 @@
 
 /* Theme-independent tokens */
 :root {
-  --font-body: "Archivo Variable", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-body: "Press Start 2P", system-ui, sans-serif;
+  --font-display: "Jersey 20", system-ui, sans-serif;
 
   --radius-hero: 20px;
   --radius-control: 10px;

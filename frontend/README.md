@@ -31,7 +31,7 @@ src/
   hooks/                   useDashboard, useWidgetData, useChat
   components/
     widgets/               one component per widget type + registry.js
-    dashboard/             Dashboard (grid) and WidgetCard (loading/error/empty)
+    dashboard/             Dashboard, TeamPicker, TeamView, Overview, HeroCard, LeadersCard, WidgetCard
     layout/AppShell.jsx    header + dashboard
     onboarding/            onboarding chat screen
     chat/                  MessageList, MessageInput, ChatPanel (assistant slide-over)
@@ -51,6 +51,7 @@ src/
 - [x] Phase 2: widgets, registry, loading/error states, responsive grid
 - [x] Phase 3: onboarding chat + assistant panel
 - [x] Visual Phase A: dark/light/system theme, Archivo font, monograms, restyled table, form, and next match
-- [ ] Visual Phase B: team picker, "All teams" view, filled hero, merged leaders
+- [x] Visual Phase B: team picker, "All teams" view, filled hero with live countdown, merged leaders, table views,
+      tappable form chips, "Ask about this" on every card, motion
 - [ ] Visual Phase C: team color picker, chat polish, motion
 - [ ] Phase 4: search bar + detail views

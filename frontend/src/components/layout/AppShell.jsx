@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { api, USE_MOCK } from "../../api/client.js";
 import { useChat } from "../../hooks/useChat.js";
 import { useTheme } from "../../hooks/useTheme.js";
+import { AssistantProvider } from "../../context/AssistantContext.jsx";
 import { PreferencesProvider } from "../../context/PreferencesContext.jsx";
+import { SITE_NAME } from "../../config/appearance.js";
 import { formatToday } from "../../lib/formatDate.js";
 import Dashboard from "../dashboard/Dashboard.jsx";
 import ChatPanel from "../chat/ChatPanel.jsx";
@@ -16,7 +18,22 @@ export default function AppShell({ dashboard }) {
   const { theme, setTheme } = useTheme();
   // Lives here (not inside ChatPanel) so the conversation survives closing the panel.
   const assistant = useChat("assistant");
-  const teamNames = dashboard.preferences.teams.map((t) => t.name).join(", ");
+
+  useEffect(() => {
+    document.title = SITE_NAME;
+  }, []);
+
+  // Cards call ask("...") to open the panel and send a ready-made question.
+  const { send } = assistant;
+  const assistantApi = useMemo(
+    () => ({
+      ask: (question) => {
+        setChatOpen(true);
+        send(question);
+      },
+    }),
+    [send]
+  );
 
   async function handleEdit() {
     if (!window.confirm("This will restart setup. Continue?")) return;
@@ -33,10 +50,11 @@ export default function AppShell({ dashboard }) {
 
   return (
     <PreferencesProvider preferences={dashboard.preferences}>
+      <AssistantProvider value={assistantApi}>
       <header className="app-header">
-        <div>
-          <h1 className="app-header__title display">{formatToday()}</h1>
-          {teamNames && <p className="muted small">{teamNames}</p>}
+        <div className="brand">
+          <h1 className="brand__name">{SITE_NAME}</h1>
+          <p className="brand__subtitle">{formatToday()}</p>
         </div>
         <div className="app-header__actions">
           {USE_MOCK && <span className="badge">Sample data</span>}
@@ -50,6 +68,7 @@ export default function AppShell({ dashboard }) {
         <Dashboard widgets={dashboard.widgets} />
       </main>
       {chatOpen && <ChatPanel chat={assistant} onClose={() => setChatOpen(false)} />}
+      </AssistantProvider>
     </PreferencesProvider>
   );
 }

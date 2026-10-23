@@ -1,0 +1,66 @@
+/* Footy Haus identity: the brand header, font roles, and picture backgrounds.
+   Import this in main.jsx AFTER motion.css. */
+
+:root {
+  /* Fonts have three jobs. Set them in tokens.css; these are only fallbacks. */
+  --font-brand: var(--font-display, var(--font-body));
+  --brand-weight: 800; /* use 400 for fonts with a single weight, like Press Start 2P */
+
+  /* Pictures live in frontend/public. Change the file names here if yours differ.
+     A missing file is fine: you just get a plain dark background. */
+  --hero-photo: url("/hero.jpg");
+  --hero-scrim: 0.65; /* 0 = picture at full strength, 1 = hidden. Raise it if text is hard to read. */
+  --page-photo: url("/background.jpg");
+  --page-scrim: rgba(13, 20, 17, 0.9);
+}
+:root[data-theme="light"] {
+  --page-scrim: rgba(237, 240, 234, 0.92);
+}
+
+/* ---------- Brand header ---------- */
+.brand { display: grid; gap: 2px; }
+.brand__name {
+  font-family: var(--font-brand);
+  font-weight: var(--brand-weight);
+  font-size: 1.75rem;
+  line-height: 1.1;
+  letter-spacing: 0.01em;
+}
+.brand__subtitle {
+  font-family: var(--font-body);
+  font-size: var(--font-sm);
+  color: var(--text-muted);
+}
+
+/* ---------- Page background picture ---------- */
+body {
+  background-color: var(--bg);
+  background-image: linear-gradient(var(--page-scrim), var(--page-scrim)), var(--page-photo);
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+/* Let a little of the picture show through the header */
+.app-header {
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter: blur(8px);
+}
+
+/* ---------- Hero with a picture instead of a color block ---------- */
+.hero--photo {
+  background-color: #0d1411;
+  background-image:
+    linear-gradient(rgba(8, 12, 10, var(--hero-scrim)), rgba(8, 12, 10, var(--hero-scrim))),
+    var(--hero-photo);
+  background-size: cover;
+  background-position: center;
+  border-top: 4px solid var(--team-accent, transparent);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+/* Your team keeps its color, as the circle. Opponents stay a soft ghost. */
+.hero--photo .monogram--invert {
+  background: var(--team-accent);
+  border-color: var(--team-accent);
+  color: var(--on-accent);
+  text-shadow: none;
+}
