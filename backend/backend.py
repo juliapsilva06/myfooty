@@ -8,13 +8,6 @@ Setup:
     export ANTHROPIC_API_KEY=...
     uvicorn backend_v2:app --reload
 
-What's new vs v1:
-- Preferences (teams, competitions, stats) saved to prefs.json
-- Onboarding agent collects preferences and calls save_preferences
-- Dashboard layout is built from preferences by plain Python (not by the model)
-- Local search index (search_index.json) so search doesn't use API quota
-- Assistant agent with more tools
-
 """
 
 import json
@@ -83,7 +76,7 @@ def fd_get(path: str, params: dict | None = None, ttl: int = 300) -> dict:
 
 # =============================================================================
 # 2. Stat catalog: single source of truth for what can be offered
-#    "available" will be flipped to True when I upgrade the API plan.
+#    "available" will be flipped to True when the API plan is upgraded.
 # =============================================================================
 STAT_CATALOG = {
     "form": {"label": "Recent results and form", "available": True},
@@ -499,7 +492,8 @@ class ChatRequest(BaseModel):
     messages: list[ChatMessage]
 
 
-client = anthropic.Anthropic()
+ENABLE_AI = os.environ.get("ENABLE_AI", "").lower() == "true"
+client = anthropic.Anthropic() if ENABLE_AI else None // makes the ai client optional
 
 
 def run_agent(mode: str, history: list[ChatMessage]) -> tuple[str, bool]:
@@ -584,6 +578,14 @@ def api_widget_data(widget: dict):
 def api_search(q: str = ""):
     return search(q)
 
+@app.get("/api/competitions")
+def api_competitions():
+    return {"competitions": _index["competitions"]}
+
+
+@app.get("/api/stats")
+def api_stats():
+    return list_available_stats()
 
 @app.get("/api/team/{team_id}")
 def api_team(team_id: int):

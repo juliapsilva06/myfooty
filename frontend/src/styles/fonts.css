@@ -1,6 +1,9 @@
-/* ALL font choices live here. Import this LAST in main.jsx so nothing overrides it.
+/*
    To change a font, change its name in the three lines below (the font must also be loaded:
    an import in main.jsx, or a <link> in index.html). */
+
+
+   html { outline: 8px solid hotpink; }
 
 :root {
   --font-body: "Jersey 20", system-ui, sans-serif;           /* sentences, tables, chat, the date */

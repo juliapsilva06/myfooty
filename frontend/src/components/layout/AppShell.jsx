@@ -9,6 +9,7 @@ import { SITE_NAME } from "../../config/appearance.js";
 import { formatToday } from "../../lib/formatDate.js";
 import Dashboard from "../dashboard/Dashboard.jsx";
 import ChatPanel from "../chat/ChatPanel.jsx";
+import Brand from "./Brand.jsx";
 import HeaderMenu from "./HeaderMenu.jsx";
 
 export default function AppShell({ dashboard }) {
@@ -53,7 +54,7 @@ export default function AppShell({ dashboard }) {
       <AssistantProvider value={assistantApi}>
       <header className="app-header">
         <div className="brand">
-          <h1 className="brand__name">{SITE_NAME}</h1>
+          <Brand />
           <p className="brand__subtitle">{formatToday()}</p>
         </div>
         <div className="app-header__actions">
