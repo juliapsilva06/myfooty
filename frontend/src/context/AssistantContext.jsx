@@ -1,7 +1,8 @@
 import { createContext, useContext } from "react";
 
 // Lets any card open the assistant panel with a question: ask("How has Riverside FC been playing?")
-const AssistantContext = createContext({ ask: () => {} });
+// `enabled` is false on the free plan, and then no "Ask" buttons appear.
+const AssistantContext = createContext({ ask: () => {}, enabled: false });
 
 export const AssistantProvider = AssistantContext.Provider;
 

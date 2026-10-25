@@ -1,6 +1,7 @@
 import { useDashboard } from "./hooks/useDashboard.js";
 import AppShell from "./components/layout/AppShell.jsx";
-import OnboardingScreen from "./components/onboarding/OnboardingScreen.jsx";
+import PageBackground from "./components/layout/PageBackground.jsx";
+import SetupScreen from "./components/setup/SetupScreen.jsx";
 
 function CenterMessage({ children }) {
   return (
@@ -10,7 +11,7 @@ function CenterMessage({ children }) {
   );
 }
 
-export default function App() {
+function Screen() {
   const { data, isLoading, isError, refetch } = useDashboard();
 
   if (isLoading) {
@@ -24,8 +25,8 @@ export default function App() {
   if (isError) {
     return (
       <CenterMessage>
-        <h1>Can't reach the server</h1>
-        <p className="muted">Check that the backend is running, then try again.</p>
+        <h1>Something went wrong</h1>
+        <p className="muted">We couldn't load your dashboard. Please try again.</p>
         <button className="btn btn-primary" onClick={() => refetch()}>
           Try again
         </button>
@@ -33,6 +34,16 @@ export default function App() {
     );
   }
 
-  if (!data.onboarded) return <OnboardingScreen />;
+  // First visit: pick your teams with the search form. No AI needed.
+  if (!data.onboarded) return <SetupScreen />;
   return <AppShell dashboard={data} />;
+}
+
+export default function App() {
+  return (
+    <>
+      <PageBackground />
+      <Screen />
+    </>
+  );
 }

@@ -165,95 +165,27 @@ function widgetData(w) {
   }
 }
 
-// Mirrors build_widgets() in backend_v2.py
-function buildWidgets(prefs) {
-  const stats = new Set(prefs.stats);
-  const teamIds = prefs.teams.map((t) => t.id);
-  const widgets = [];
-
-  for (const t of prefs.teams) {
-    widgets.push({ id: `next_match:${t.id}`, type: "next_match", team_id: t.id, title: `${t.name}: next match` });
-    if (stats.has("form")) {
-      widgets.push({ id: `recent_results:${t.id}`, type: "recent_results", team_id: t.id, n: 5, title: `${t.name}: recent form` });
-    }
-  }
-  for (const code of prefs.competitions) {
-    if (stats.has("standings")) {
-      widgets.push({ id: `standings:${code}`, type: "standings", competition: code, highlight_team_ids: teamIds, top: 5, title: `${code}: table` });
-    }
-    if (stats.has("goals")) {
-      widgets.push({ id: `top_scorers:${code}`, type: "top_scorers", competition: code, title: `${code}: top scorers` });
-    }
-    if (stats.has("assists")) {
-      widgets.push({ id: `top_assists:${code}`, type: "top_assists", competition: code, title: `${code}: assists among top scorers` });
-    }
-  }
-  return widgets;
-}
-
 // ------------------------------------------------------------- mock "server"
-const PREFERENCES = {
-  teams: [
-    { id: 1, name: "Riverside FC" },
-    { id: 2, name: "Harbor United" },
-  ],
-  competitions: ["DEMO"],
-  stats: ["form", "standings", "goals", "assists"],
+// Preferences and the dashboard layout live in the visitor's browser (see api/client.js),
+// so this fake backend only has to serve data.
+
+const STATS = {
+  available: {
+    form: "Recent results and form",
+    standings: "League table (points, goal difference)",
+    goals: "Top scorers (goals)",
+    assists: "Assists among top scorers",
+  },
+  unavailable: {
+    possession: "Possession: Needs a paid statistics add-on",
+    shots: "Shots: Needs a paid statistics add-on",
+    cards: "Cards: Needs a paid data tier",
+    lineups: "Lineups: Needs a paid data tier",
+    live_scores: "Live scores: Free tier scores are delayed",
+  },
 };
 
-// Starts onboarded so you see the dashboard first. "Edit my dashboard" resets this.
-const state = { onboarded: true };
-
-// ------------------------------------------------------- scripted mock agents
-// The real agent lives in the backend. These fakes just let you test the chat UI.
-const script = { step: 0, answers: [] };
-
-function onboardingReply(messages) {
-  const last = (messages[messages.length - 1]?.content ?? "").trim();
-  if (messages.length === 1) {
-    // A brand new conversation always starts from the top.
-    script.step = 0;
-    script.answers = [];
-  }
-  const reply = (answer, dashboard_updated = false) => ({ answer, dashboard_updated });
-
-  switch (script.step) {
-    case 0:
-      script.step = 1;
-      return reply("Hi! I'm here to set up your dashboard. First, which teams do you follow?");
-    case 1:
-      script.answers[0] = last;
-      script.step = 2;
-      return reply("Nice! Which leagues or competitions do you want to focus on?");
-    case 2:
-      script.answers[1] = last;
-      script.step = 3;
-      return reply(
-        "Last question: which stats matter most to you? I can show recent form, the league table, " +
-          "top scorers (goals), and assists. Possession isn't available on the free data plan."
-      );
-    case 3:
-      script.answers[2] = last;
-      script.step = 4;
-      return reply(
-        `Here's what I have:\n- Teams: ${script.answers[0]}\n- Leagues: ${script.answers[1]}\n` +
-          `- Stats: ${script.answers[2]}\n\nShall I save this? (yes/no)`
-      );
-    default:
-      if (/^\s*(y|yes|yeah|yep|sure|ok|okay)\b/i.test(last)) {
-        state.onboarded = true;
-        script.step = 0;
-        return reply(
-          "All set! (Mock mode: I'm loading the sample dashboard with fictional teams, whatever you picked.)",
-          true
-        );
-      }
-      script.step = 1;
-      script.answers = [];
-      return reply("No problem, let's redo it. Which teams do you follow?");
-  }
-}
-
+// ------------------------------------------------------------ scripted assistant
 function assistantReply(text) {
   const q = text.toLowerCase();
   const reply = (answer) => ({ answer: `${answer} (Sample data)`, dashboard_updated: false });
@@ -278,12 +210,6 @@ function assistantReply(text) {
 }
 
 export const api = {
-  async getDashboard() {
-    await sleep(300);
-    if (!state.onboarded) return { onboarded: false };
-    return { onboarded: true, preferences: PREFERENCES, widgets: buildWidgets(PREFERENCES) };
-  },
-
   async getWidgetData(widget) {
     await randomDelay();
     if (Math.random() < ERROR_RATE) {
@@ -307,6 +233,16 @@ export const api = {
     };
   },
 
+  async getCompetitions() {
+    await sleep(200);
+    return { competitions: [COMPETITION] };
+  },
+
+  async getStats() {
+    await sleep(150);
+    return STATS;
+  },
+
   async getTeam(id) {
     await randomDelay();
     return { next_match: nextMatch(Number(id)), recent_results: recentResults(Number(id), 5) };
@@ -319,18 +255,9 @@ export const api = {
 
   async chat(mode, messages) {
     await randomDelay();
-    if (mode === "onboarding") return onboardingReply(messages);
+    if (mode === "onboarding") {
+      return { answer: "Setup now happens in the search form.", dashboard_updated: false };
+    }
     return assistantReply(messages[messages.length - 1]?.content ?? "");
-  },
-
-  async getPreferences() {
-    await sleep(200);
-    return { preferences: state.onboarded ? PREFERENCES : null };
-  },
-
-  async resetPreferences() {
-    await sleep(200);
-    state.onboarded = false;
-    return { ok: true };
   },
 };

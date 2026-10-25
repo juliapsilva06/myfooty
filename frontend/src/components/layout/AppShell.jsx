@@ -1,20 +1,20 @@
 import { useEffect, useMemo, useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
-import { api, USE_MOCK } from "../../api/client.js";
+import { USE_MOCK } from "../../api/client.js";
+import { SITE_NAME } from "../../config/appearance.js";
+import { ASSISTANT_ENABLED } from "../../config/features.js";
 import { useChat } from "../../hooks/useChat.js";
 import { useTheme } from "../../hooks/useTheme.js";
 import { AssistantProvider } from "../../context/AssistantContext.jsx";
 import { PreferencesProvider } from "../../context/PreferencesContext.jsx";
-import { SITE_NAME } from "../../config/appearance.js";
 import { formatToday } from "../../lib/formatDate.js";
 import Dashboard from "../dashboard/Dashboard.jsx";
 import ChatPanel from "../chat/ChatPanel.jsx";
+import SetupScreen from "../setup/SetupScreen.jsx";
 import Brand from "./Brand.jsx";
 import HeaderMenu from "./HeaderMenu.jsx";
 
 export default function AppShell({ dashboard }) {
-  const queryClient = useQueryClient();
-  const [resetting, setResetting] = useState(false);
+  const [editing, setEditing] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
   const { theme, setTheme } = useTheme();
   // Lives here (not inside ChatPanel) so the conversation survives closing the panel.
@@ -28,7 +28,9 @@ export default function AppShell({ dashboard }) {
   const { send } = assistant;
   const assistantApi = useMemo(
     () => ({
+      enabled: ASSISTANT_ENABLED,
       ask: (question) => {
+        if (!ASSISTANT_ENABLED) return;
         setChatOpen(true);
         send(question);
       },
@@ -36,39 +38,39 @@ export default function AppShell({ dashboard }) {
     [send]
   );
 
-  async function handleEdit() {
-    if (!window.confirm("This will restart setup. Continue?")) return;
-    setResetting(true);
-    try {
-      await api.resetPreferences();
-      assistant.reset();
-      queryClient.removeQueries({ queryKey: ["widget"] });
-      await queryClient.invalidateQueries({ queryKey: ["dashboard"] });
-    } finally {
-      setResetting(false);
-    }
+  // "Edit dashboard" reopens the search form with your current choices filled in.
+  if (editing) {
+    return (
+      <SetupScreen
+        initial={dashboard.preferences}
+        onCancel={() => setEditing(false)}
+        onSaved={() => setEditing(false)}
+      />
+    );
   }
 
   return (
     <PreferencesProvider preferences={dashboard.preferences}>
       <AssistantProvider value={assistantApi}>
-      <header className="app-header">
-        <div className="brand">
-          <Brand />
-          <p className="brand__subtitle">{formatToday()}</p>
-        </div>
-        <div className="app-header__actions">
-          {USE_MOCK && <span className="badge">Sample data</span>}
-          <button className="btn btn-primary" onClick={() => setChatOpen(true)}>
-            Ask a question
-          </button>
-          <HeaderMenu theme={theme} onThemeChange={setTheme} onEdit={handleEdit} busy={resetting} />
-        </div>
-      </header>
-      <main className="app-main">
-        <Dashboard widgets={dashboard.widgets} />
-      </main>
-      {chatOpen && <ChatPanel chat={assistant} onClose={() => setChatOpen(false)} />}
+        <header className="app-header">
+          <div className="brand">
+            <Brand />
+            <p className="brand__subtitle">{formatToday()}</p>
+          </div>
+          <div className="app-header__actions">
+            {USE_MOCK && <span className="badge">Sample data</span>}
+            {ASSISTANT_ENABLED && (
+              <button className="btn btn-primary" onClick={() => setChatOpen(true)}>
+                Ask a question
+              </button>
+            )}
+            <HeaderMenu theme={theme} onThemeChange={setTheme} onEdit={() => setEditing(true)} />
+          </div>
+        </header>
+        <main className="app-main">
+          <Dashboard widgets={dashboard.widgets} />
+        </main>
+        {ASSISTANT_ENABLED && chatOpen && <ChatPanel chat={assistant} onClose={() => setChatOpen(false)} />}
       </AssistantProvider>
     </PreferencesProvider>
   );

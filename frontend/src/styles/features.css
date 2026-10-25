@@ -1,0 +1,136 @@
+/* Setup form, player and match links, and the countdown background menu.
+   Imported by the components that use it, so it always loads. */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Links from the data to the real match ---------- */
+.player-link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--border);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 150ms;
+}
+.player-link:hover { text-decoration-color: currentColor; }
+.player-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+/* ---------- Setup form ---------- */
+.setup {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: var(--space-8) var(--space-4) var(--space-12);
+}
+.setup__inner { width: 100%; max-width: 720px; display: grid; gap: var(--space-8); align-content: start; }
+.setup__head { display: grid; gap: var(--space-3); justify-items: start; }
+.setup__title { font-size: 1.5rem; line-height: 1.2; }
+.setup__section { display: grid; gap: var(--space-3); padding-top: var(--space-6); border-top: 1px solid var(--border); }
+.setup__section h2 { font-size: var(--font-lg); }
+
+.setup-search {
+  width: 100%;
+  font: inherit;
+  padding: 12px 14px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+}
+.setup-search:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+.setup-results { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); }
+.setup-result {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  background: var(--surface);
+  border-radius: var(--radius-control);
+}
+.setup-result__name { display: grid; min-width: 0; }
+
+.setup-chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.setup-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 4px 8px 4px 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+.setup-chip__remove {
+  font: inherit;
+  font-size: var(--font-sm);
+  padding: 2px 6px;
+  color: var(--text-muted);
+  background: none;
+  border: 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.setup-chip__remove:hover { color: var(--text); }
+.setup-chip__remove:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+.setup-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: var(--space-2) var(--space-4); }
+.setup-check { display: flex; align-items: flex-start; gap: var(--space-2); padding: var(--space-2); border-radius: 8px; cursor: pointer; }
+.setup-check:hover { background: var(--accent-soft); }
+.setup-check input { margin-top: 4px; accent-color: var(--text); }
+
+.setup-footer {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: color-mix(in srgb, var(--bg) 90%, transparent);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid var(--border);
+}
+.setup-error { color: var(--loss); }
+
+/* ---------- Countdown background menu ---------- */
+.hero__bg { position: absolute; top: var(--space-3); left: var(--space-4); z-index: 2; }
+.hero__bg-btn {
+  font: inherit;
+  font-size: var(--font-sm);
+  padding: 2px 12px;
+  color: var(--hero-fg, #fff);
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--hero-fg, #fff) 45%, transparent);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.hero__bg-btn:hover { background: color-mix(in srgb, var(--hero-fg, #fff) 14%, transparent); }
+.hero__bg-btn:focus-visible { outline: 2px solid var(--hero-fg, #fff); outline-offset: 2px; }
+.hero__bg-panel {
+  position: absolute;
+  top: calc(100% + var(--space-2));
+  left: 0;
+  width: min(320px, 78vw);
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  color: var(--text);
+  text-shadow: none;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  box-shadow: var(--shadow-pop);
+}
+.hero__bg-row { display: flex; gap: var(--space-2); }
+.hero__bg-row .setup-search { padding: 8px 10px; }

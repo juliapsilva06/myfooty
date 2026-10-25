@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { usePreferences } from "../../context/PreferencesContext.jsx";
 import { formatMatchDate } from "../../lib/formatDate.js";
+import { matchHighlightsUrl } from "../../lib/searchLinks.js";
 import { initials } from "../../lib/teamCode.js";
+import "../../styles/features.css";
 
 const OUTCOME_WORD = { W: "Win", D: "Draw", L: "Loss" };
 
@@ -68,6 +70,17 @@ export default function RecentResults({ widget, data }) {
             </p>
             <p className="muted small">
               {formatMatchDate(open.match.date)}, {open.match.competition}
+            </p>
+            <p className="small">
+              <a
+                className="player-link"
+                href={matchHighlightsUrl(open.match)}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Search for highlights
+                <span className="sr-only"> (opens in a new tab)</span>
+              </a>
             </p>
           </>
         )}
