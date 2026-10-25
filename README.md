@@ -2,15 +2,14 @@
 
 # Footy Haus
 
-A personal football dashboard. It shows only the teams and leagues you follow, and an AI assistant answers questions using live data.
+A personal football dashboard. It shows only the teams and leagues you follow, and an AI assistant answers questions using live data (demo).
 
 Most sports apps show far too much at once. Footy Haus starts with a short chat that learns your teams, leagues, and favorite stats, then builds a dashboard around them: next match with a live countdown, recent form, the league table around your team, and top scorers and assists.
 
 
-
 ## Features
 
-- **Personalized setup.** A chat asks which teams, leagues, and stats you care about, looks up the real teams, and saves your choices.
+- **Personalized setup.** User chooses which teams, leagues, and stats they care about. The website saves their choices.
 - **Team picker.** Switch between your teams, or open "All teams" for a quick overview of each (and only the teams you follow).
 - **Next-match hero.** A live countdown, kickoff time in your local time zone, and home or away.
 - **Recent form.** Win, draw, and loss chips with scorelines from your team's point of view. Tap a chip for match details.
@@ -26,7 +25,7 @@ Most sports apps show far too much at once. Footy Haus starts with a short chat 
 ```
 Browser (React)  ──►  Backend (FastAPI)  ──►  football-data.org   (matches, tables, scorers)
                               │
-                              └──────────►  Claude API            (the assistant)
+                              └──────────►  Claude API            (the assistant, demo)
 ```
 
 - The **backend** keeps both API keys private, caches sports data, builds a local search index, and runs the AI agent.
@@ -49,9 +48,7 @@ myfooty/
 ├─ backend/
 │  ├─ backend.py            FastAPI app: data client, search index, widgets, AI agent
 │  ├─ requirements.txt      Python packages (see Setup)
-│  ├─ .env                  Your keys. Never commit this
-│  ├─ prefs.json            Created at runtime: your saved teams and stats
-│  └─ search_index.json     Created at runtime: team and competition search list
+│  ├─ .env                  API keys (do not commit)
 └─ frontend/
    ├─ index.html
    ├─ public/               Images served as-is: logo.png, logo-light.png, hero.jpg, background.jpg

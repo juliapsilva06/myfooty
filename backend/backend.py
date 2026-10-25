@@ -493,7 +493,7 @@ class ChatRequest(BaseModel):
 
 
 ENABLE_AI = os.environ.get("ENABLE_AI", "").lower() == "true"
-client = anthropic.Anthropic() if ENABLE_AI else None // makes the ai client optional
+client = anthropic.Anthropic() if ENABLE_AI else None  # makes the ai client optional
 
 
 def run_agent(mode: str, history: list[ChatMessage]) -> tuple[str, bool]:
