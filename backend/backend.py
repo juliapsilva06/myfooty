@@ -162,10 +162,12 @@ def load_index() -> None:
     try:
         if INDEX_PATH.exists():
             _index = json.loads(INDEX_PATH.read_text())
-            if time.time() - _index.get("built_at", 0) < 7 * 86400:
+            too_old = time.time() - _index.get("built_at", 0) > 7 * 86400
+            frozen = os.environ.get("FREEZE_INDEX", "").lower() == "true"
+            if frozen or not too_old:
                 return
         _index = build_index()
-    except Exception as e:  # keep the app alive if the index build fails
+    except Exception as e:
         print("Index build failed:", e)
 
 
