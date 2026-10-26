@@ -1,7 +1,7 @@
 import { usePreferences } from "../../context/PreferencesContext.jsx";
 import { useWidgetData } from "../../hooks/useWidgetData.js";
 import { relativeDay } from "../../lib/formatDate.js";
-import { initials } from "../../lib/teamCode.js";
+import { teamCode } from "../../lib/teamCode.js";
 import Monogram from "../common/Monogram.jsx";
 
 const NONE = { id: "none" }; // placeholder so hooks can run when a widget is missing
@@ -22,10 +22,6 @@ function OverviewRow({ team, widgets, onOpen }) {
   const next = useWidgetData(widgets.next ?? NONE, { enabled: Boolean(widgets.next) });
   const recent = useWidgetData(widgets.recent ?? NONE, { enabled: Boolean(widgets.recent) });
 
-  const m = next.data;
-  const code =
-    (m && m.home_id === team.id ? m.home_tla : m && m.away_id === team.id ? m.away_tla : null) ||
-    initials(team.name);
   const form = recent.data ?? [];
 
   return (
@@ -35,7 +31,7 @@ function OverviewRow({ team, widgets, onOpen }) {
       onClick={() => onOpen(team.id)}
       aria-label={`Open ${team.name}`}
     >
-      <Monogram code={code} size="md" accent={accent} />
+      <Monogram code={teamCode(team)} size="md" accent={accent} />
       <span className="overview-row__main">
         <strong className="overview-row__name">{team.name}</strong>
         <span className="muted small">{widgets.next ? nextLine(next, team.id) : "Next match not selected"}</span>

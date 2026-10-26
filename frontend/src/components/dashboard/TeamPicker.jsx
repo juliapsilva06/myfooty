@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { usePreferences } from "../../context/PreferencesContext.jsx";
-import { initials } from "../../lib/teamCode.js";
+import { teamCode } from "../../lib/teamCode.js";
 import Monogram from "../common/Monogram.jsx";
 
 // Tabs: "All teams", then one per followed team. Arrow keys, Home, and End move between them.
@@ -41,7 +41,7 @@ export default function TeamPicker({ teams, selection, onSelect }) {
             style={accent ? { "--tab-accent": accent } : undefined}
             onClick={() => onSelect(item.id)}
           >
-            {item.team && <Monogram code={initials(item.label)} size="sm" accent={accent} />}
+            {item.team && <Monogram code={teamCode(item.team)} size="sm" accent={accent} />}
             <span>{item.label}</span>
           </button>
         );

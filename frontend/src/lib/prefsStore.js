@@ -13,7 +13,7 @@ export function loadPrefs() {
     return {
       teams: p.teams
         .filter((t) => t && Number.isFinite(t.id) && typeof t.name === "string")
-        .map((t) => ({ id: t.id, name: t.name })),
+        .map((t) => ({ id: t.id, name: t.name, ...(typeof t.tla === "string" && t.tla ? { tla: t.tla } : {}) })),
       competitions: p.competitions.filter((c) => typeof c === "string"),
       stats: p.stats.filter((s) => typeof s === "string"),
     };
@@ -25,7 +25,7 @@ export function loadPrefs() {
 // Returns true when saved, false when the browser refused.
 export function savePrefs(prefs) {
   const clean = {
-    teams: prefs.teams.map((t) => ({ id: t.id, name: t.name })),
+    teams: prefs.teams.map((t) => ({ id: t.id, name: t.name, ...(typeof t.tla === "string" && t.tla ? { tla: t.tla } : {}) })),
     competitions: [...prefs.competitions],
     stats: [...prefs.stats],
   };

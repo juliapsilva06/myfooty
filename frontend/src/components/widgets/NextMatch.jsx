@@ -1,6 +1,6 @@
 import { formatMatchDate, relativeDay } from "../../lib/formatDate.js";
 import { formatCountdown } from "../../lib/formatCountdown.js";
-import { initials } from "../../lib/teamCode.js";
+import { initials, teamCode } from "../../lib/teamCode.js";
 import { useCountdown } from "../../hooks/useCountdown.js";
 import { usePreferences } from "../../context/PreferencesContext.jsx";
 import Monogram from "../common/Monogram.jsx";
@@ -11,7 +11,7 @@ function Side({ name, id, tla }) {
   // On the colored hero: your team is inverted, opponents are a translucent ghost.
   return (
     <div className="hero__side">
-      <Monogram code={tla || initials(name)} size="lg" tone={followed ? "invert" : "ghost"} />
+      <Monogram code={followed ? teamCode(followed) : tla || initials(name)} size="lg" tone={followed ? "invert" : "ghost"} />
       <span className="hero__name display">{name}</span>
     </div>
   );

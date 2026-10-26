@@ -2,17 +2,19 @@ import { useState } from "react";
 import { usePreferences } from "../../context/PreferencesContext.jsx";
 import { formatMatchDate } from "../../lib/formatDate.js";
 import { matchHighlightsUrl } from "../../lib/searchLinks.js";
-import { initials } from "../../lib/teamCode.js";
+import { initials, teamCode } from "../../lib/teamCode.js";
 import "../../styles/features.css";
 
 const OUTCOME_WORD = { W: "Win", D: "Draw", L: "Loss" };
 
 // Rewrites a match from the followed team's point of view:
 // "Westport Rangers 0-2 Riverside FC" becomes "W 2–0 Westport Rangers (A)".
-function fromTeamView(m, teamId, teamName) {
+function fromTeamView(m, teamId, teamName, followedTeam) {
   const atHome = m.home_id != null ? m.home_id === teamId : m.home === teamName;
   const opponent = atHome ? m.away : m.home;
-  const code = (atHome ? m.away_tla : m.home_tla) || initials(opponent);
+  // If the opponent is also a team you follow, show the same code you chose for it elsewhere.
+  const followed = followedTeam({ id: atHome ? m.away_id : m.home_id, name: opponent });
+  const code = followed ? teamCode(followed) : (atHome ? m.away_tla : m.home_tla) || initials(opponent);
   let score = null;
   if (m.score) {
     const [h, a] = m.score.split("-");
@@ -22,14 +24,14 @@ function fromTeamView(m, teamId, teamName) {
 }
 
 export default function RecentResults({ widget, data }) {
-  const { teams, accentOf } = usePreferences();
+  const { teams, accentOf, followedTeam } = usePreferences();
   const [openKey, setOpenKey] = useState(null); // which chip's details are showing
   if (!data?.length) {
     return <p className="muted">No results yet. They'll appear after the first match.</p>;
   }
 
   const team = teams.find((t) => t.id === widget.team_id);
-  const rows = data.map((m) => fromTeamView(m, widget.team_id, team?.name));
+  const rows = data.map((m) => fromTeamView(m, widget.team_id, team?.name, followedTeam));
   const accent = accentOf(widget.team_id);
   const newestFirst = [...rows].reverse();
   const open = rows.find((r) => r.key === openKey);

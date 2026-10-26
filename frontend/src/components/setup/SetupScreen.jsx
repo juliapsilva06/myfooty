@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "../../api/client.js";
 import { defaultAccent } from "../../lib/accents.js";
-import { initials } from "../../lib/teamCode.js";
+import { teamCode } from "../../lib/teamCode.js";
 import Monogram from "../common/Monogram.jsx";
 import Brand from "../layout/Brand.jsx";
 import "../../styles/features.css";
@@ -55,7 +55,7 @@ export default function SetupScreen({ initial = null, onCancel = null, onSaved =
 
   function addTeam(team) {
     if (teams.some((t) => t.id === team.id)) return;
-    setTeams([...teams, { id: team.id, name: team.name }]);
+    setTeams([...teams, { id: team.id, name: team.name, tla: team.tla || null }]); // keep the code so it matches everywhere
     // Tick the leagues this team plays in, so the table and leaders show up without extra clicks.
     setComps((prev) => {
       const next = new Set(prev);
@@ -100,7 +100,7 @@ export default function SetupScreen({ initial = null, onCancel = null, onSaved =
             <ul className="setup-chips" aria-label="Teams you picked">
               {teams.map((t, i) => (
                 <li key={t.id} className="setup-chip">
-                  <Monogram code={initials(t.name)} size="sm" accent={defaultAccent(i)} />
+                  <Monogram code={teamCode(t)} size="sm" accent={defaultAccent(i)} />
                   <span>{t.name}</span>
                   <button
                     className="setup-chip__remove"
@@ -144,7 +144,7 @@ export default function SetupScreen({ initial = null, onCancel = null, onSaved =
                 const added = teams.some((x) => x.id === t.id);
                 return (
                   <li key={t.id} className="setup-result">
-                    <Monogram code={t.tla || initials(t.name)} size="sm" />
+                    <Monogram code={teamCode(t)} size="sm" />
                     <span className="setup-result__name">
                       <span>{t.name}</span>
                       <span className="muted small">{(t.competitions ?? []).map((c) => compName[c] ?? c).join(", ")}</span>
