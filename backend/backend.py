@@ -542,9 +542,11 @@ def run_agent(mode: str, history: list[ChatMessage]) -> tuple[str, bool]:
 # =============================================================================
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    threading.Thread(target=load_index, daemon=True).start()  # don't block startup
+    if os.environ.get("FREEZE_INDEX", "").lower() == "true":
+        load_index()  # quick: it only reads the committed file
+    else:
+        threading.Thread(target=load_index, daemon=True).start()
     yield
-
 
 app = FastAPI(lifespan=lifespan)
 
