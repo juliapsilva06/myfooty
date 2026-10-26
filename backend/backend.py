@@ -546,6 +546,10 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
+from fastapi.middleware.cors import CORSMiddleware
+
+ALLOWED_ORIGINS = [o.strip() for o in os.environ.get("ALLOWED_ORIGINS", "http://localhost:5173").split(",") if o.strip()]
+app.add_middleware(CORSMiddleware, allow_origins=ALLOWED_ORIGINS, allow_methods=["GET", "POST"], allow_headers=["Content-Type"])
 
 @app.get("/api/preferences")
 def api_get_preferences():
@@ -565,7 +569,15 @@ def api_dashboard():
         return {"onboarded": False}
     return {"onboarded": True, "preferences": prefs, "widgets": build_widgets(prefs)}
 
-
+KNOWN_WIDGET_TYPES = {"next_match", "recent_results", "standings", "top_scorers", "top_assists"}
+def _check_widget(w: dict) -> None:
+    if w.get("type") not in KNOWN_WIDGET_TYPES:
+        raise ValueError("Unknown widget type")
+    if "team_id" in w and w["team_id"] not in {t["id"] for t in _index["teams"]}:
+        raise ValueError("Unknown team")
+    if "competition" in w and w["competition"] not in {c["code"] for c in _index["competitions"]}:
+        raise ValueError("Unknown competition")
+    
 @app.post("/api/widget-data")
 def api_widget_data(widget: dict):
     try:
