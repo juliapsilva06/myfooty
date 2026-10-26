@@ -64,6 +64,9 @@ export default function AppShell({ dashboard }) {
                 Ask a question
               </button>
             )}
+            <button className="btn btn-quiet" onClick={() => setEditing(true)}>
+              Edit teams
+            </button>
             <HeaderMenu theme={theme} onThemeChange={setTheme} onEdit={() => setEditing(true)} />
           </div>
         </header>

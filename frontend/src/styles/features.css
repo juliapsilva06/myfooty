@@ -134,3 +134,8 @@
 }
 .hero__bg-row { display: flex; gap: var(--space-2); }
 .hero__bg-row .setup-search { padding: 8px 10px; }
+
+/* Menus and panels must sit above the page content below them */
+.app-header { position: relative; z-index: 40; }
+.accent { z-index: 25; }
+body .chat-panel { z-index: 60; }
