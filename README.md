@@ -2,9 +2,13 @@
 
 # Footy Haus
 
-A personal football dashboard. It shows only the teams and leagues you follow, and an AI assistant answers questions using live data (demo).
+A personal football dashboard. It shows only the teams and leagues you follow.
 
-Most sports apps show far too much at once. Footy Haus starts with a short chat that learns your teams, leagues, and favorite stats, then builds a dashboard around them: next match with a live countdown, recent form, the league table around your team, and top scorers and assists.
+**[Live demo](https://footy-haus.vercel.app)**
+
+![Footy Haus dashboard showing a team's next match countdown, recent form, table, and leaders](docs/dashboard.png)
+
+Objective: Most sports apps show far too much at once. In Footy Haus, the visuals are far more simple: a dashboard is built around your favorite teams, leagues and stats: next match with a live countdown, recent form, the league table around your team, and top scorers and assists.
 
 
 ## Features
@@ -19,6 +23,7 @@ Most sports apps show far too much at once. Footy Haus starts with a short chat 
 - **Assistant chat.** Answers come from tool calls to the same data as the dashboard, and it says so when something isn't available.
 - **Themes.** Dark by default, with light and "match my device" options.
 - **Sample-data mode.** The whole interface runs without a backend or API keys.
+
 
 ## How it works
 
