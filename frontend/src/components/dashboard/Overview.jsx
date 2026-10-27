@@ -1,17 +1,18 @@
 import { usePreferences } from "../../context/PreferencesContext.jsx";
 import { useWidgetData } from "../../hooks/useWidgetData.js";
 import { relativeDay } from "../../lib/formatDate.js";
+import { isHomeFor } from "../../lib/matchSide.js";
 import { teamCode } from "../../lib/teamCode.js";
 import Monogram from "../common/Monogram.jsx";
 
 const NONE = { id: "none" }; // placeholder so hooks can run when a widget is missing
 
-function nextLine(query, teamId) {
+function nextLine(query, team) {
   if (query.isLoading) return "Loading next match...";
   if (query.isError) return "Couldn't load the next match";
   const m = query.data;
   if (!m || m.info) return m?.info ?? "No fixture scheduled";
-  const atHome = m.home_id != null ? m.home_id === teamId : true;
+  const atHome = isHomeFor(m, team);
   const opponent = atHome ? m.away : m.home;
   return `Next: ${atHome ? "vs" : "at"} ${opponent}, ${relativeDay(m.date).label.toLowerCase()}`;
 }
@@ -34,7 +35,7 @@ function OverviewRow({ team, widgets, onOpen }) {
       <Monogram code={teamCode(team)} size="md" accent={accent} />
       <span className="overview-row__main">
         <strong className="overview-row__name">{team.name}</strong>
-        <span className="muted small">{widgets.next ? nextLine(next, team.id) : "Next match not selected"}</span>
+        <span className="muted small">{widgets.next ? nextLine(next, team) : "Next match not selected"}</span>
       </span>
       <span className="overview-row__form" aria-hidden="true">
         {form.map((r, i) => (
@@ -56,6 +57,7 @@ export default function Overview({ teams, groups, onOpen }) {
           Your teams
         </h2>
         <p className="muted">Pick a team to see its next match, form, table, and leaders.</p>
+        <p className="muted small">Change a team's color with the Team color button on its page, or in Edit teams.</p>
       </div>
       <div className="overview-list">
         {teams.map((t) => (

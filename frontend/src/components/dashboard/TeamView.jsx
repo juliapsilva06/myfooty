@@ -1,5 +1,6 @@
 import { Fragment } from "react";
 import { usePreferences } from "../../context/PreferencesContext.jsx";
+import AccentPicker from "./AccentPicker.jsx";
 import HeroCard from "./HeroCard.jsx";
 import LeadersCard from "./LeadersCard.jsx";
 import WidgetCard from "./WidgetCard.jsx";
@@ -24,7 +25,10 @@ export default function TeamView({ team, groups }) {
 
   return (
     <section className="view view-fade" style={accent ? { "--team-accent": accent } : undefined}>
-      <h2 className="view-title display">{team ? team.name : "Your competitions"}</h2>
+      <div className="view-head">
+        <h2 className="view-title display">{team ? team.name : "Your competitions"}</h2>
+        {team && <AccentPicker team={team} />}
+      </div>
 
       {team && mine.next && <HeroCard widget={mine.next} team={team} accent={accent} />}
 

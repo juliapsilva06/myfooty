@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "../../api/client.js";
-import { defaultAccent } from "../../lib/accents.js";
+import { defaultAccent, storedAccent } from "../../lib/accents.js";
+import { saveAccent } from "../../lib/accentStore.js";
 import { teamCode } from "../../lib/teamCode.js";
+import ColorPicker from "../common/ColorPicker.jsx";
 import Monogram from "../common/Monogram.jsx";
 import Brand from "../layout/Brand.jsx";
 import "../../styles/features.css";
@@ -33,6 +35,11 @@ export default function SetupScreen({ initial = null, onCancel = null, onSaved =
   const [comps, setComps] = useState(() => new Set(initial?.competitions ?? []));
   const [stats, setStats] = useState(() => new Set(initial?.stats?.length ? initial.stats : DEFAULT_STATS));
   const [query, setQuery] = useState("");
+  // Colors picked here, by team id. A team with no pick shows (and keeps) the default for its position.
+  const [colors, setColors] = useState(() =>
+    Object.fromEntries((initial?.teams ?? []).map((t) => [t.id, storedAccent(t.id)]).filter(([, hex]) => hex))
+  );
+  const [colorFor, setColorFor] = useState(null); // id of the team whose color panel is open
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
 
@@ -68,6 +75,8 @@ export default function SetupScreen({ initial = null, onCancel = null, onSaved =
     setSaving(true);
     setError(null);
     try {
+      // Lock in every team's color, so colors never shift when you add or remove teams later.
+      teams.forEach((t, i) => saveAccent(t.id, colors[t.id] ?? storedAccent(t.id) ?? defaultAccent(i)));
       const orderedStats = availableStats.length
         ? availableStats.map(([key]) => key).filter((key) => stats.has(key))
         : [...stats];
@@ -97,21 +106,50 @@ export default function SetupScreen({ initial = null, onCancel = null, onSaved =
         <section className="setup__section" aria-labelledby="setup-teams">
           <h2 id="setup-teams">1. Your teams</h2>
           {teams.length > 0 && (
-            <ul className="setup-chips" aria-label="Teams you picked">
-              {teams.map((t, i) => (
-                <li key={t.id} className="setup-chip">
-                  <Monogram code={teamCode(t)} size="sm" accent={defaultAccent(i)} />
-                  <span>{t.name}</span>
-                  <button
-                    className="setup-chip__remove"
-                    aria-label={`Remove ${t.name}`}
-                    onClick={() => setTeams(teams.filter((x) => x.id !== t.id))}
-                  >
-                    Remove
+            <>
+              <ul className="setup-chips" aria-label="Teams you picked">
+                {teams.map((t, i) => (
+                  <li key={t.id} className="setup-chip">
+                    <button
+                      className="setup-chip__color"
+                      aria-label={`Change color for ${t.name}`}
+                      aria-expanded={colorFor === t.id}
+                      onClick={() => setColorFor(colorFor === t.id ? null : t.id)}
+                    >
+                      <Monogram code={teamCode(t)} size="sm" accent={colors[t.id] ?? storedAccent(t.id) ?? defaultAccent(i)} />
+                    </button>
+                    <span>{t.name}</span>
+                    <button
+                      className="setup-chip__remove"
+                      aria-label={`Remove ${t.name}`}
+                      onClick={() => {
+                        setTeams(teams.filter((x) => x.id !== t.id));
+                        if (colorFor === t.id) setColorFor(null);
+                      }}
+                    >
+                      Remove
+                    </button>
+                  </li>
+                ))}
+              </ul>
+              <p className="muted small">Tap a team's circle to choose its color.</p>
+              {colorFor != null && teams.some((t) => t.id === colorFor) && (
+                <div className="setup-colorpanel" role="group" aria-label="Team color">
+                  <p className="small">Color for {teams.find((t) => t.id === colorFor)?.name}</p>
+                  <ColorPicker
+                    value={
+                      colors[colorFor] ??
+                      storedAccent(colorFor) ??
+                      defaultAccent(teams.findIndex((t) => t.id === colorFor))
+                    }
+                    onChange={(hex) => setColors((prev) => ({ ...prev, [colorFor]: hex }))}
+                  />
+                  <button className="btn" onClick={() => setColorFor(null)}>
+                    Done
                   </button>
-                </li>
-              ))}
-            </ul>
+                </div>
+              )}
+            </>
           )}
           <label className="sr-only" htmlFor="team-search">
             Search for a team
