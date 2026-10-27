@@ -3,8 +3,6 @@
    an import in main.jsx, or a <link> in index.html). */
 
 
-   html { outline: 8px solid hotpink; }
-
 :root {
   --font-body: "Jersey 20", system-ui, sans-serif;           /* sentences, tables, chat, the date */
   --font-display: "Press Start 2P", system-ui, sans-serif;    /* team names, countdown, scores, headings */
